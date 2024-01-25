@@ -4,6 +4,7 @@
 
 - **Express**: Server framework for building the RESTful API.
 - **MongoDB**: Database for storing user and book information.
+- **JWT**: Auth
 
 ## Table Data
 

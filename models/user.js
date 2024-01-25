@@ -5,18 +5,10 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
   borrowedBook: {
-    book: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Book',
-      default: null,
-    },
-    borrowedAt: {
-      type: Date,
-      default: null,
-    },
+    book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: null },
+    borrowedAt: { type: Date, default: null },
+    dueDate: { type: Date, default: null },
   },
 })
 
-const User = mongoose.model('User', userSchema)
-
-module.exports = User
+module.exports = mongoose.model('User', userSchema)
