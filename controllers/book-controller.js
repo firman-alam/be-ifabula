@@ -55,19 +55,21 @@ const borrow_book = async (req, res) => {
     const book = await Book.findById(book_id).exec()
 
     if (!user || !book) {
-      return res.status(404).json({ message: 'User or Book not found' })
+      return res
+        .status(404)
+        .json({ message: 'User or Book not found', status: false })
     }
 
     if (user.borrowedBook && user.borrowedBook.book) {
       return res
         .status(400)
-        .json({ message: 'User already has a borrowed book' })
+        .json({ message: 'User already has a borrowed book', status: false })
     }
 
     if (book.qty <= 0) {
       return res
         .status(400)
-        .json({ message: 'Book is not available for borrowing' })
+        .json({ message: 'Book is not available for borrowing', status: false })
     }
 
     const borrowedAt = new Date()
@@ -89,10 +91,12 @@ const borrow_book = async (req, res) => {
       dueDate: dueDate,
     })
 
-    res.status(200).json({ message: 'Book borrowed successfully', book })
+    res
+      .status(200)
+      .json({ message: 'Book borrowed successfully', book, status: true })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal Server Error', status: false })
   }
 }
 
@@ -104,14 +108,18 @@ const return_book = async (req, res) => {
     const book = await Book.findById(book_id).exec()
 
     if (!user || !book) {
-      return res.status(404).json({ message: 'User or Book not found' })
+      return res
+        .status(404)
+        .json({ message: 'User or Book not found', status: false })
     }
 
     if (
       !user.borrowedBook ||
       user.borrowedBook.book.toString() !== book._id.toString()
     ) {
-      return res.status(400).json({ message: 'User did not borrow this book' })
+      return res
+        .status(400)
+        .json({ message: 'User did not borrow this book', status: false })
     }
 
     book.qty += 1
@@ -133,10 +141,12 @@ const return_book = async (req, res) => {
     await book.save()
     await user.save()
 
-    res.status(200).json({ message: 'Book returned successfully', book })
+    res
+      .status(200)
+      .json({ message: 'Book returned successfully', book, status: true })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ message: 'Internal Server Error', status: false })
   }
 }
 
