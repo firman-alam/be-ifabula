@@ -8,7 +8,7 @@ const sign_up = async (req, res) => {
     // Check if the email is already registered
     const duplicateUser = await User.findOne({ email }).lean().exec()
     if (duplicateUser) {
-      return res.status(409).json({ message: 'Email is already registered' })
+      return res.status(409).json({ message: "Email is already registered" })
     }
 
     // Hash the password before storing it
@@ -21,12 +21,14 @@ const sign_up = async (req, res) => {
       isAdmin,
     })
 
-    res
-      .status(201)
-      .json({ message: 'User created successfully', user: newUser })
+    res.status(201).json({
+      message: "User created successfully",
+      user: newUser,
+      status: true,
+    })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ message: error.message, status: false })
   }
 }
 
@@ -39,20 +41,22 @@ const sign_in = async (req, res) => {
 
     // Check if the user exists
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      return res.status(401).json({ message: "Invalid email or password" })
     }
 
     // Check if the password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      return res.status(401).json({ message: "Invalid email or password" })
     }
 
-    res.status(200).json({ message: 'Sign in successful', user: user })
+    res
+      .status(200)
+      .json({ message: "Sign in successful", user: user, status: true })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ message: error.message, status: false })
   }
 }
 
